@@ -17,13 +17,15 @@ export class UserService {
     page: number = 1,
     limit: number = 10,
     searchQuery?: string,
-    sortOrder?: 'asc' | 'desc'
+    sortOrder?: 'asc' | 'desc',
+    role?: string
   ): Promise<{ users: User[]; totalCount: number }> {
     const offset = (page - 1) * limit;
-
+  
     const whereClause: { [key: string]: any } = {
       id: { [Op.ne]: 1 }, // Exclude user with ID 1
     };
+    
     if (searchQuery) {
       whereClause[(Op.or as any)] = [
         { email: { [Op.like]: `%${searchQuery}%` } },
@@ -32,18 +34,23 @@ export class UserService {
       ];
       // Add additional search filters as needed
     }
-
+    
+    if (role) {
+      whereClause.role = { [Op.like]: `%${role}%` };
+    }
+  
     const order: OrderItem[] = [['createdAt', sortOrder || 'asc']]; // Sort by createdAt field, defaulting to ascending order
-
+  
     const { rows, count } = await User.findAndCountAll({
       where: whereClause,
       limit: +limit,
       offset: +offset,
       order,
     });
-
+  
     return { users: rows, totalCount: count };
   }
+  
   
   async create(createUserDto: CreateUserDto, file: Express.Multer.File | null, request: express.Request): Promise<User | any> {
     const { password, role, ...rest } = createUserDto;
@@ -159,5 +166,21 @@ export class UserService {
   async findByEmail(email: string): Promise<User | null> {
     const user = await User.findOne({ where: { email } });
     return user || null;
+  }
+
+  async findAllUsersByRole(role: Roles): Promise<User[]> {
+    return User.findAll({
+      where: {
+        role: role,
+      },
+    });
+  }
+
+  async findAllUsersWithRoleContributor(): Promise<User[]> {
+    return this.findAllUsersByRole(Roles.Contributor);
+  }
+
+  async findAllUsersWithRoleUser(): Promise<User[]> {
+    return this.findAllUsersByRole(Roles.User);
   }
 }

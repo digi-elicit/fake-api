@@ -20,16 +20,27 @@ enum UserRole {
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-//  @UseGuards(AuthGuard('jwt'), new AdminGuard(['admin']))
-  @Get()
-  findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('search') searchQuery?: string,
-    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
-  ): Promise<{ users: User[]; totalCount: number }> {
-    return this.userService.findAll(page, limit, searchQuery, sortOrder);
+  @Get('/contributors')
+  async getAllContributors(): Promise<User[]> {
+    return this.userService.findAllUsersWithRoleContributor();
   }
+
+  @Get('/data')
+  async getAllUsers(): Promise<User[]> {
+    return this.userService.findAllUsersWithRoleUser();
+  }
+
+//  @UseGuards(AuthGuard('jwt'), new AdminGuard(['admin']))
+@Get()
+findAll(
+  @Query('page') page: number = 1,
+  @Query('limit') limit: number = 10,
+  @Query('search') searchQuery?: string,
+  @Query('sortOrder') sortOrder?: 'asc' | 'desc',
+  @Query('role') role?: string,
+): Promise<{ users: User[]; totalCount: number }> {
+  return this.userService.findAll(page, limit, searchQuery, sortOrder, role);
+}
   
   @UseInterceptors(FileInterceptor('file', multerOptions))
   @Post()
@@ -91,4 +102,7 @@ export class UserController {
     await this.userService.delete(id);
     return { mesaage: 'user is deleted' };
   }
+
+ 
+ 
 }
