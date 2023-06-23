@@ -15,14 +15,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(helmet());
 
-  // Assuming you have a UserRepository instance
+  // UserRepository instance
   const userRepository = app.get(UserRepository);
 
-  // Check if the admin user already exists
+  // Check if the admin already exists
   const adminExists = await userRepository.findOne({ where: { role: 'admin' } });
-  if (adminExists) {
-    console.log('Admin user already exists. Skipping creation.');
-  } else {
+  if (!adminExists) {
     // Retrieve admin details from environment variables
     const adminName = process.env.ADMIN_NAME;
     const adminEmail = process.env.ADMIN_EMAIL;
