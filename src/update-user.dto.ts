@@ -1,13 +1,23 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import { IsNotEmpty, IsEmail, Matches, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsNotEmpty()
+ 
+  @IsOptional()
   name: string;
 
-  @IsNotEmpty()
-  @IsEmail()
+  @IsOptional()
+  status: string;
+
+  @IsOptional()
+  @Matches(/^[a-zA-Z0-9_.+-]+@(gmail|yahoo|elicit)\.com$/, {
+    message: 'Invalid email format',
+  })
   email: string;
 
+  @IsOptional()
+ role:string;
   
-  password: string;
+ @IsOptional()
+ password:string;
+  
 }

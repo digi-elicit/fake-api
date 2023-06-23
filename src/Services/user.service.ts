@@ -149,6 +149,8 @@ export class UserService {
     }
   
     user.name = updateUserDto.name;
+    user.role=updateUserDto.role;
+    user.status=updateUserDto.status;
   
     await user.save();
     return user;
