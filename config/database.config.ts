@@ -1,10 +1,11 @@
 import { SequelizeOptions } from 'sequelize-typescript';
 import * as dotenv from 'dotenv';
+import { Dialect } from 'sequelize';
 
 dotenv.config();
 
 const config: SequelizeOptions = {
-  dialect: 'mysql',
+  dialect: process.env.DB_DIALECT as Dialect,
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT, 10),
   username: process.env.DB_USERNAME,

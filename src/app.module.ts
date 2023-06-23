@@ -13,6 +13,7 @@ import { DatabaseModule } from './database.module';
 import { FileUploadModule } from './file uploads/file-upload.module';
 import { ContributorController } from './Controller/contributor.controller';
 import { ContributorService } from './Services/contributor.service';
+import { UserRepository } from './admin/user.repository';
 
 @Module({
   imports: [
@@ -25,6 +26,6 @@ import { ContributorService } from './Services/contributor.service';
     DatabaseModule,  
   ],
   controllers: [UserController, AuthController,ContributorController],
-  providers: [UserService, AuthService , JwtStrategy,ContributorService],
+  providers: [UserService, AuthService , JwtStrategy,ContributorService,UserRepository],
 })
 export class AppModule {}
