@@ -131,7 +131,7 @@ export class UserService {
   
     const user = await this.findById(id);
   
-    const { email, ...rest } = updateUserDto;
+    const { email, role, ...rest } = updateUserDto;
   
     if (email && email !== user.email) {
       const existingUser = await User.findOne({ where: { email } });
@@ -148,13 +148,24 @@ export class UserService {
       user.password = hashedPassword;
     }
   
+    let userRole: Roles;
+  
+    if (role == UserRoles.ADMIN.toString()) {
+      userRole = Roles.Admin;
+    } else if (role == UserRoles.Contributor.toString()) {
+      userRole = Roles.Contributor;
+    } else {
+      userRole = Roles.User;
+    }
+  
     user.name = updateUserDto.name;
-    user.role=updateUserDto.role;
-    user.status=updateUserDto.status;
+    user.role = userRole;
+    user.status = updateUserDto.status;
   
     await user.save();
     return user;
   }
+  
   
   async delete(id: number): Promise<any> {
     if (id == 1) {
