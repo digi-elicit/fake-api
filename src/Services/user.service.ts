@@ -53,6 +53,7 @@ export class UserService {
   
   
   async create(createUserDto: CreateUserDto, file: Express.Multer.File | null, request: express.Request): Promise<User | any> {
+    console.log({createUserDto})
     const { password, role, ...rest } = createUserDto;
 
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
@@ -72,14 +73,14 @@ export class UserService {
       } 
     }
 
-    let userRole: Roles;
-
+    let userRole: any;
+    
     if (role == UserRoles.ADMIN.toString()) {
-      userRole = Roles.Admin;
+      userRole = UserRoles.ADMIN;    
     } else if (role == UserRoles.Contributor.toString()) {
-      userRole = Roles.Contributor;
+      userRole = UserRoles.Contributor; 
     } else {
-      userRole = Roles.User;
+      userRole = UserRoles.User;
     }
 
     if (file) {
@@ -100,7 +101,7 @@ export class UserService {
       const newUser = await User.create({
         password: hashedPassword,
         file_url: fileName,
-        role: userRole,
+       // role: userRole,
         ...rest,
       });
 
@@ -148,14 +149,14 @@ export class UserService {
       user.password = hashedPassword;
     }
   
-    let userRole: Roles;
+    let userRole: any;
   
     if (role == UserRoles.ADMIN.toString()) {
-      userRole = Roles.Admin;
+      userRole = 1;
     } else if (role == UserRoles.Contributor.toString()) {
-      userRole = Roles.Contributor;
+      userRole = 3;
     } else {
-      userRole = Roles.User;
+      userRole = 2;
     }
   
     user.name = updateUserDto.name;
